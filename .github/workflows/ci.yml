@@ -51,12 +51,13 @@ jobs:
           if-no-files-found: error
           retention-days: 1
 
-      - name: Formatting diagnostics
+      - name: Lockfile bootstrap (remove after committing lockfile)
         shell: bash
         run: |
-          set -euo pipefail
-          npm exec -- vp fmt . --write
-          git diff -- README.md AGENTS.md package.json vite.config.ts src/
+          echo '__START_PACKAGE_LOCK_JSON_BASE64__'
+          base64 -w 12000 package-lock.json
+          echo
+          echo '__END_PACKAGE_LOCK_JSON_BASE64__'
 
       - name: Static checks, coverage and AGENTS.md lint
         run: npm run check

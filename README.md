@@ -14,6 +14,7 @@ Vite+ is pinned to **1.0.0** to respect the 30-day release-age policy.
 Its bundled Oxlint powers both linting and type checking; Vitest runs through
 Vite+. There is no separate ESLint, Prettier, Oxlint, or Vitest dependency.
 The npm overrides pin transitive Vite and Vitest to the bundled Vite+ versions.
+TypeScript 5.9.3 is retained for declaration generation during `vp pack`.
 
 ## Getting started
 
@@ -31,19 +32,19 @@ are disabled.
 
 ## Commands
 
-| Command | Action |
-| --- | --- |
-| `npm run check` | Vite+ format/lint/type checks, coverage-gated tests, and AGENTS.md lint |
-| `npm run fix` | Fix lint and format via `vp check --fix` |
-| `npm run lint` | Oxlint, including anti-slop and type-aware lint |
-| `npm run lint:agents` | `agents-md-lint@1.0.1` checks AGENTS.md in strict mode |
-| `npm run format` | Oxfmt |
-| `npm test` | Run unit tests |
-| `npm run test:watch` | Watch unit tests |
-| `npm run test:coverage` | Run tests with the 80% coverage floor |
-| `npm run build` | `vp pack`: ESM in `dist/`, sourcemap and declarations |
-| `npm run hooks:install` | Enable the Vite+ Git hook dispatcher |
-| `npm run audit` | npm vulnerability audit at moderate severity |
+| Command                 | Action                                                                  |
+| ----------------------- | ----------------------------------------------------------------------- |
+| `npm run check`         | Vite+ format/lint/type checks, coverage-gated tests, and AGENTS.md lint |
+| `npm run fix`           | Fix lint and format via `vp check --fix`                                |
+| `npm run lint`          | Oxlint, including anti-slop and type-aware lint                         |
+| `npm run lint:agents`   | `agents-md-lint@1.0.1` checks AGENTS.md in strict mode                  |
+| `npm run format`        | Oxfmt                                                                   |
+| `npm test`              | Run unit tests                                                          |
+| `npm run test:watch`    | Watch unit tests                                                        |
+| `npm run test:coverage` | Run tests with the 80% coverage floor                                   |
+| `npm run build`         | `vp pack`: ESM in `dist/`, sourcemap and declarations                   |
+| `npm run hooks:install` | Enable the Vite+ Git hook dispatcher                                    |
+| `npm run audit`         | npm vulnerability audit at moderate severity                            |
 
 Vite+ configuration lives in **`vite.config.ts`**: lint, format, test,
 packaging, and staged checks. TypeScript strictness remains in `tsconfig.json`.

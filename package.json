@@ -2,14 +2,9 @@
   "name": "ts-agentic-template",
   "version": "0.0.0",
   "private": true,
-  "type": "module",
   "license": "BSD-2-Clause",
   "author": "Balajee.R.C",
-  "packageManager": "npm@11.16.0",
-  "engines": {
-    "node": ">=24.11.0",
-    "npm": ">=11.10.0"
-  },
+  "type": "module",
   "scripts": {
     "check": "vp check && vp test run --coverage && npm run lint:agents",
     "fix": "vp check --fix",
@@ -30,12 +25,18 @@
   "devDependencies": {
     "@types/node": "^24.13.3",
     "@vitest/coverage-v8": "5.0.1",
+    "agents-md-lint": "1.0.1",
     "pino-pretty": "^13.1.3",
-    "vite-plus": "1.0.0",
-    "agents-md-lint": "1.0.1"
+    "typescript": "5.9.3",
+    "vite-plus": "1.0.0"
   },
   "overrides": {
     "vite": "npm:@voidzero-dev/vite-plus-core@1.0.0",
     "vitest": "5.0.1"
-  }
+  },
+  "engines": {
+    "node": ">=24.11.0",
+    "npm": ">=11.10.0"
+  },
+  "packageManager": "npm@11.16.0"
 }
