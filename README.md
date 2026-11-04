@@ -17,10 +17,13 @@ no separate ESLint, Prettier, or Oxlint dependencies. The migration retains
 Vitest 5.1.0 as a direct development dependency to align the coverage provider.
 TypeScript 5.9.3 remains for declaration generation during `vp pack`.
 
-The normal npm dependency-release age requirement is still **30 days**.
-Because Vite+ 1.5.0 was published on November 4, 2026, `.npmrc` explicitly
-exempts only the upgraded Vite+/Vitest toolchain packages from that window.
-Review and remove those exclusions when the pinned releases qualify.
+The normal npm dependency-release age requirement remains **30 days**.
+Vite+ 1.5.0 was published on November 4, 2026; its pinned upgrade was a
+**one-time, reviewed exception** using `npm_config_min_release_age=0`
+during migration and lockfile generation on GitHub Actions. There are no
+persistent exemptions in `.npmrc`. Subsequent clean installs use the
+committed lockfile with `npm ci --ignore-scripts`; future upgrades must
+again respect the 30-day window or justify a separate exception.
 
 ## Getting started
 
