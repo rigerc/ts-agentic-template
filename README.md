@@ -2,8 +2,8 @@
 
 A minimal, strict TypeScript starter for coding agents. The tooling is **npm +
 Vite+**, with vendored [anti-slop](https://github.com/dmmulroy/anti-slop)
-rules enabled inside Oxlint. No bespoke agent instructions, skills, or
-secondary lint/test systems.
+rules enabled inside Oxlint. One short `AGENTS.md` documents exact project
+commands; there are no custom agent skills or secondary lint/test systems.
 
 ## Requirements
 
@@ -33,9 +33,10 @@ are disabled.
 
 | Command | Action |
 | --- | --- |
-| `npm run check` | Vite+ format, lint, TypeScript type-check, and coverage-gated tests |
+| `npm run check` | Vite+ format/lint/type checks, coverage-gated tests, and AGENTS.md lint |
 | `npm run fix` | Fix lint and format via `vp check --fix` |
 | `npm run lint` | Oxlint, including anti-slop and type-aware lint |
+| `npm run lint:agents` | `agents-md-lint@1.0.1` checks AGENTS.md in strict mode |
 | `npm run format` | Oxfmt |
 | `npm test` | Run unit tests |
 | `npm run test:watch` | Watch unit tests |
@@ -48,6 +49,17 @@ Vite+ configuration lives in **`vite.config.ts`**: lint, format, test,
 packaging, and staged checks. TypeScript strictness remains in `tsconfig.json`.
 The only repository-owned hook is `.vite-hooks/pre-commit`, which invokes
 `vp staged`; the generated `.vite-hooks/_` dispatcher is ignored by Git.
+
+## Continuous integration
+
+The [GitHub Actions CI workflow](.github/workflows/ci.yml) runs on pull
+requests and pushes to `main`. It installs Node.js from `.nvmrc`, pins
+npm 11.16.0, then runs `npm run check` and `npm run build`.
+The AGENTS.md linter is an npm development dependency, not a vendored
+agent ruleset.
+
+Until the first npm lockfile is committed, CI falls back to `npm install`
+with a warning. Once `package-lock.json` exists, CI uses `npm ci` only.
 
 ## Source
 

@@ -11,7 +11,7 @@
     "npm": ">=11.10.0"
   },
   "scripts": {
-    "check": "vp check && vp test run --coverage",
+    "check": "vp check && vp test run --coverage && npm run lint:agents",
     "fix": "vp check --fix",
     "lint": "vp lint",
     "format": "vp fmt",
@@ -20,7 +20,8 @@
     "test:coverage": "vp test run --coverage",
     "build": "vp pack",
     "hooks:install": "vp hooks enable",
-    "audit": "npm audit --audit-level=moderate"
+    "audit": "npm audit --audit-level=moderate",
+    "lint:agents": "agents-md-lint AGENTS.md --root . --strict"
   },
   "dependencies": {
     "pino": "^10.3.1",
@@ -30,7 +31,8 @@
     "@types/node": "^24.13.3",
     "@vitest/coverage-v8": "5.0.1",
     "pino-pretty": "^13.1.3",
-    "vite-plus": "1.0.0"
+    "vite-plus": "1.0.0",
+    "agents-md-lint": "1.0.1"
   },
   "overrides": {
     "vite": "npm:@voidzero-dev/vite-plus-core@1.0.0",
