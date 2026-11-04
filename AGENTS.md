@@ -6,7 +6,7 @@ Use Node.js 24.11+ and npm 11.16.0. The repository uses Vite+ and does
 not require project-specific agent skills.
 
 ```sh
-npm install --ignore-scripts
+npm ci --ignore-scripts
 ```
 
 ## Testing
