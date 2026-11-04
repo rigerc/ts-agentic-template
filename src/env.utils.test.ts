@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vite-plus/test';
 import { z } from 'zod';
 
 import { formatIssues } from './env.utils';
@@ -14,7 +14,7 @@ const fixtureSchema = z.object({
   server: z.object({ port: z.number() }),
 });
 
-function errorFor(value: unknown): z.ZodError {
+function errorFor(value: { name: string | number; server: { port: string | number } }): z.ZodError {
   const result = fixtureSchema.safeParse(value);
 
   if (result.success) {

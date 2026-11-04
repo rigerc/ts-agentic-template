@@ -1,14 +1,15 @@
-# anti-slop source provenance
+# anti-slop provenance
 
-- **Upstream repository:** https://github.com/dmmulroy/anti-slop
-- **Commit:** [13909c9e07590f5a85d93c62712259fe14a883f7](https://github.com/dmmulroy/anti-slop/commit/13909c9e07590f5a85d93c62712259fe14a883f7)
-- **Source:** the upstream `src/` tree at that commit, excluding `*.test.ts`, copied into this directory.
-- **License:** upstream MIT license, at `LICENSE`; vendored ESLint Stylistic code retains its own MIT `vendor/eslint-stylistic/LICENSE` and `UPSTREAM.md`.
-- **Installed entry point:** `tools/oxlint/anti-slop/index.ts`; registered in `oxlint.config.ts`.
-- **Intentional decisions:** generic rules enabled as errors. Effect rules are copied
-  for traceability but not enabled: the template has no direct `effect`
-  dependency. ESLint remains the primary type-aware linter.
+- **Upstream:** https://github.com/dmmulroy/anti-slop
+- **Imported source commit:** [13909c9e07590f5a85d93c62712259fe14a883f7](https://github.com/dmmulroy/anti-slop/commit/13909c9e07590f5a85d93c62712259fe14a883f7)
+- **Scope:** upstream generic `src/index.ts`, `src/rules/`, `src/shared/` and
+  `src/vendor/` (without tests or unused Effect-specific rules)
+- **Local adaptation:** `index.ts` imports `eslintCompatPlugin` from
+  `vite-plus/lint/plugins`, which matches the Oxlint version bundled by Vite+,
+  instead of importing a separate `@oxlint/plugins` package
+- **License:** upstream MIT `LICENSE`; vendored ESLint Stylistic MIT
+  `vendor/eslint-stylistic/LICENSE` and original `UPSTREAM.md`
+- **Configuration:** `vite.config.ts`, `lint.jsPlugins` and generic rules
 
-To update: inspect upstream changes relative to this commit, reconcile any
-local customizations, and update this record to the **actual** copied source
-revision. Never replace the directory with unreviewed upstream code.
+For updates, compare changes against the pinned upstream commit and preserve
+the plugin import adaptation and license notices.
