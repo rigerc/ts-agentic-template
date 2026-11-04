@@ -5,24 +5,24 @@
 # and nothing downstream will notice. It is a gate you choose to keep, not one
 # imposed on you.
 #
-# `pre-commit` runs `pnpm check` on every commit. This runs the things that are
+# `pre-commit` runs `npm run check` on every commit. This runs the things that are
 # too slow for that, plus the two scans that used to live in CI.
 
 set -e
 
 if [ ! -x .tools/gitleaks ]; then
-  echo "gitleaks is not installed. Run: pnpm tools:install" >&2
+  echo "gitleaks is not installed. Run: npm run tools:install" >&2
   exit 1
 fi
 
 echo "==> Scanning history for secrets"
-pnpm scan:secrets
+npm run scan:secrets
 
 echo "==> Auditing dependencies"
-pnpm check:vulnerabilities
+npm run check:vulnerabilities
 
 echo "==> Building"
-pnpm build
+npm run build
 
 echo "==> Mutation testing"
-pnpm test:mutation
+npm run test:mutation

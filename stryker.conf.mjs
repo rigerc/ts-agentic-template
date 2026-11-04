@@ -11,14 +11,14 @@
  *
  * Read a survivor as a missing assertion, not as a line to delete.
  *
- * Deliberately NOT part of `pnpm check`: that runs on every commit via the
+ * Deliberately NOT part of `npm run check`: that runs on every commit via the
  * pre-commit hook, and a full mutation run scales with suite size in a way a
  * commit gate cannot absorb. The `pre-push` hook is where it runs.
  */
 
 /** @type {import('@stryker-mutator/api/core').PartialStrykerOptions} */
 export default {
-  packageManager: 'pnpm',
+  packageManager: 'npm',
 
   /*
    * Stryker copies the project into a sandbox before mutating it, and a copy
@@ -31,7 +31,7 @@ export default {
   ignorePatterns: ['.claude', '.clinerules', '.kilocode'],
   testRunner: 'vitest',
   // Named explicitly rather than left to the default `@stryker-mutator/*` glob:
-  // under pnpm's non-flat `node_modules` that glob finds nothing, and the run
+  // the runner package is named explicitly so plugins are discoverable, and the run
   // dies with "no TestRunner plugins were loaded".
   plugins: ['@stryker-mutator/vitest-runner'],
   vitest: { configFile: 'vitest.config.ts' },

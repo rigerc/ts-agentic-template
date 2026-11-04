@@ -10,18 +10,21 @@
   such as `.claude/rules/`, `.clinerules` and `.kilocode/rules/` are symbolic
   links to the `agent_rules` directory.
 
-## Use `pnpm` instead of `npm`
+## Use npm for all package management
 
-- This applies to all commands: `pnpm build`, `pnpm test`, `pnpm check`, etc.
-- This is especially needed for `pnpm install`.
-  - Never run `npm install`. Always use `pnpm` for all package management tasks.
+- Use `npm run build`, `npm run test`, `npm run check`, and other npm scripts.
+- Install with `npm install --ignore-scripts`; npm 11.16+ enforces the
+  repository's `min-release-age=30` policy from `.npmrc`.
+- Never mix npm with pnpm or yarn. Commit the resulting `package-lock.json`
+  after a registry-backed install and use `npm ci` for reproducible installs.
+- Run `npm run hooks:install` separately; install scripts are intentionally disabled.
 
-## Always run `pnpm check` before marking a task complete
+## Always run `npm run check` before marking a task complete
 
-- `pnpm check` runs typecheck, format, lint, unused-code, duplication,
+- `npm run check` runs typecheck, format, ESLint and anti-slop, unused-code, duplication,
   dependency rules and tests-with-coverage.
 - If it returns errors or warnings, fix them.
-- `pnpm fix` clears the mechanical ones — ESLint autofix plus Prettier. Run it
+- `npm run fix` clears the mechanical ones — ESLint/Oxlint autofix plus Prettier. Run it
   first, then read what is left.
 - Do not use eslint-disable to silence a check. Make a genuine effort to fix the issue.
 - If it reports code duplication, refactor the common code into a shared utility.
@@ -43,13 +46,20 @@
   function is often the honest shape; scattering it across files to satisfy a
   counter reads worse.
 
+## Anti-slop lint
+
+- The vendored plugin at `tools/oxlint/anti-slop/` is maintained separately from
+  `agent_rules/` and covered by `npm run lint:slop` and `npm run check`.
+- Fix findings in owned code; do not disable anti-slop rules to silence them.
+- Keep `tools/oxlint/anti-slop/UPSTREAM.md` accurate when updating the vendor copy.
+
 ## Formatting
 
 - Prettier owns formatting. ESLint does not.
 - Line length is 100 columns, set by `printWidth` in `.prettierrc`.
 - There is no ESLint `max-len` rule. `eslint-config-prettier` would disable it,
   so adding one back produces dead config that reads as enforced.
-- `pnpm check:format` is what fails the gate on unformatted code.
+- `npm run check:format` is what fails the gate on unformatted code.
 
 ## Deferred work
 
@@ -106,22 +116,18 @@
     `package.json`. Apply the same check to the tool's repository, then pin the
     version and verify a checksum — `scripts/installGitleaks.sh` is the
     pattern. Never fetch `latest`, and never pipe a download into a shell.
-- Install with scripts off: `pnpm add --ignore-scripts <package>`.
-- After a fresh clone, run `pnpm hooks:install`. `--ignore-scripts` skips the
+- Install with scripts off: `npm install --ignore-scripts <package>`.
+- After a fresh clone, run `npm run hooks:install`. `--ignore-scripts` skips the
   `prepare` script that installs husky, so without it the git hooks are inert.
-- `minimumReleaseAge` (30 days) constrains **resolution**, not just
-  verification. A `^x.y.z` range pinned to a release from this week has no
-  mature version to fall back to and the install fails outright.
-  - Range a new dependency at the newest **matured** version, and let it drift
-    upward on its own.
-- Do not add to `trustPolicyExclude` in `pnpm-workspace.yaml` just to make an
-  install pass. Each entry is a reviewed exception, pinned to an exact version.
-- A package that needs its build step goes in `allowBuilds`, one at a time,
-  after looking at what the step does.
-- `auditConfig.ignoreGhsas` in `pnpm-workspace.yaml` silences one advisory at a
-  time, with the reasoning written beside it. Never raise
-  `--audit-level` instead: that hides every future finding of that severity,
-  not the one that was reviewed.
+- `min-release-age=30` in `.npmrc` constrains **resolution** in DAYS,
+  including transitive dependencies. Select a mature release when adding a package.
+- npm does not have equivalent native `trustPolicy` or `blockExoticSubdeps`
+  controls; inspect new lockfile entries instead of assuming the old guards still apply.
+- Install scripts stay disabled (`ignore-scripts=true` in `.npmrc`). If a
+  dependency genuinely needs a build step, review it and explicitly run
+  `npm rebuild <package> --ignore-scripts=false` for that package only.
+- npm audit has no per-advisory exception list matching pnpm's `ignoreGhsas`.
+  Investigate failures; do not suppress them by raising the audit severity.
 
 ### Recorded exceptions to the star threshold
 
@@ -137,7 +143,7 @@
 - Tests that need a real external service are `*.integration.test.ts` — excluded
   from the default suite, given their own config and script when the project
   grows some.
-- Coverage has a floor, checked by `pnpm check`. Deleting or skipping a test to
+- Coverage has a floor, checked by `npm run check`. Deleting or skipping a test to
   get to green fails the gate instead.
 
 ### Lint is part of the test suite
@@ -152,7 +158,7 @@
 
 ### Mutation testing
 
-- `pnpm test:mutation` runs Stryker. The `pre-push` hook runs it.
+- `npm run test:mutation` runs Stryker. The `pre-push` hook runs it.
 - It changes the source one small edit at a time and reruns the suite: `>`
   becomes `>=`, a string becomes `""`, a branch is dropped.
 - A mutant that **survives** is a line no test pins down. Coverage cannot see
@@ -162,7 +168,7 @@
   case, extract it to `*.utils.ts` and test it directly. That is how
   `src/env.utils.ts` came to exist.
 - The `break` threshold in `stryker.conf.mjs` is a ratchet. It only goes up.
-- It is deliberately not in `pnpm check`: that runs on every commit, and a
+- It is deliberately not in `npm run check`: that runs on every commit, and a
   mutation run does not fit in a commit gate.
 
 ### The numbers, and what actually holds them
@@ -183,7 +189,7 @@ claim the old value.
 | `coverage.thresholds` (%)       | 80    | `vitest.config.ts`    |
 | `thresholds.break` (mutation %) | 90    | `stryker.conf.mjs`    |
 | `printWidth` (columns)          | 100   | `.prettierrc`         |
-| `minimumReleaseAge` (days)      | 30    | `pnpm-workspace.yaml` |
+| `min-release-age` (days)      | 30    | `.npmrc` |
 
 Change the config and this table together. Both directions are checked: a row
 with no probe behind it fails just as loudly as a probe with no row.

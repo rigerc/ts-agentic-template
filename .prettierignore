@@ -6,6 +6,8 @@ reports
 .git
 .husky
 *.log
-pnpm-lock.yaml
+package-lock.json
+# Vendored upstream plugin is not re-formatted by this repository
+tools/oxlint/anti-slop
 # no extension -> Prettier cannot infer a parser
 LICENSE

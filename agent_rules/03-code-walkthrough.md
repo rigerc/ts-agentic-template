@@ -63,7 +63,7 @@ is missing from it, or when it names a file that no longer exists.
   _whether_ a key is commented would fail on the template as shipped.
 - The config numbers are read as text, not by importing each config. Half of
   them could not be imported anyway — `eslint.config.js` has no type
-  declarations, `stryker.conf.mjs` is plain JS, `pnpm-workspace.yaml` is YAML —
+  declarations, `stryker.conf.mjs` is plain JS, `.npmrc` is an ini-style config —
   and one mechanism reads better than three. Prettier owning the formatting is
   what keeps the patterns stable.
 - A probe that stops matching fails the same way a drifted number does: loudly,

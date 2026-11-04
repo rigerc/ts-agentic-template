@@ -2,7 +2,6 @@
 logs
 *.log
 npm-debug.log*
-pnpm-debug.log*
 
 node_modules
 dist
@@ -32,5 +31,5 @@ scratch.md
 /.stryker-tmp/
 /reports/
 
-# Pinned third-party binaries, installed by `pnpm tools:install`
+# Pinned third-party binaries, installed by `npm run tools:install`
 /.tools/

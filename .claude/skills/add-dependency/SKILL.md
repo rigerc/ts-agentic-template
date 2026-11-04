@@ -45,38 +45,35 @@ never pipe a download into a shell.
 
 ## 3. Pick a version that will actually install
 
-`minimumReleaseAge` in `pnpm-workspace.yaml` refuses anything published in the
-last 30 days. It constrains **resolution**, not just verification: a `^x.y.z`
-range whose only satisfying release is from this week has nothing to fall back
-to, and the install fails outright.
+`min-release-age=30` in `.npmrc` refuses releases less than 30 days old.
+It constrains dependency resolution (including transitives). Review the
+publish dates, and choose the newest version that satisfies the policy:
 
 ```bash
 npm view <package> time --json
+npm config get min-release-age
 ```
-
-Range at the newest **matured** version — `^4.2.0`, not `^4.2.1`, when 4.2.1 is
-two weeks old. It drifts upward on its own once the newer release matures.
 
 ## 4. Install with scripts off
 
 ```bash
-pnpm add --ignore-scripts <package>          # runtime
-pnpm add -D --ignore-scripts <package>       # dev
+npm install --ignore-scripts <package>       # runtime
+npm install -D --ignore-scripts <package>    # dev
 ```
 
-An install script is arbitrary code running as the current user, with the home
-directory — and every credential in it — in reach.
+Keep `package-lock.json` with the manifest; npm 11.16+ enforces the
+repository's `min-release-age` policy. npm also reads `ignore-scripts=true`
+from `.npmrc`. If a dependency genuinely needs its install step, review it
+first and explicitly run `npm rebuild <package> --ignore-scripts=false`.
 
-If the package genuinely needs its build step, look at what that step does,
-then add it to `allowBuilds` in `pnpm-workspace.yaml`, one package at a time.
-
-Never add to `trustPolicyExclude` to make an install pass. Each entry there is
-a reviewed exception pinned to an exact version.
+npm does not implement npm's publisher-trust downgrade or exotic-transitive
+guards. Review newly introduced resolution URLs in the lockfile rather than
+assuming those controls survived the migration.
 
 ## 5. Confirm nothing else moved
 
 ```bash
-pnpm check
+npm run check
 ```
 
 `knip` is the one to watch: a dependency used only in a JSDoc type or a config

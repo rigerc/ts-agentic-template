@@ -16,16 +16,17 @@ rules and skills — and almost no application code.
 | **@vitest/eslint-plugin** | lints the tests themselves: no assertion, focused, disabled, conditional `expect`                     |
 | **ESLint**                | typescript-eslint `strict-type-checked`, sonarjs, unicorn, perfectionist, n, promise + caps           |
 | **Prettier**              | formatting, checked by the gate; `eslint-config-prettier` keeps the two from fighting                 |
+| **anti-slop**            | vendored Oxlint plugin; rejects low-evidence TypeScript patterns alongside ESLint                                 |
 | **knip**                  | unused files, exports and dependencies — in both default and production mode                          |
 | **jscpd**                 | copy-paste detection at a 0% threshold                                                                |
 | **dependency-cruiser**    | circular imports, orphans, and your module boundaries                                                 |
 | **zod**                   | `src/env.ts` — the environment, parsed and validated at boot                                          |
 | **pino**                  | `src/logger.ts` — structured logs; `no-console` is a lint error                                       |
 | **commitlint**            | Conventional Commits, on `commit-msg`                                                                 |
-| **husky**                 | `pre-commit` runs `pnpm check`; `pre-push` runs the slow half                                         |
+| **husky**                 | `pre-commit` runs `npm run check`; `pre-push` runs the slow half                                         |
 | **gitleaks**              | secret scan over the whole history, pinned and checksum-verified, on `pre-push`                       |
-| **pnpm audit**            | lockfile vulnerabilities on `pre-push`, with a reviewed ignore list                                   |
-| **pnpm**                  | with supply-chain guards in `pnpm-workspace.yaml` (see below)                                         |
+| **npm audit**            | vulnerability scan on `pre-push`; failures require triage, not blanket ignores                  |
+| **npm**                  | npm 11.16+ with a 30-day release-age gate and lifecycle scripts disabled in `.npmrc`           |
 
 ### Agent setup
 
@@ -33,7 +34,7 @@ rules and skills — and almost no application code.
 AGENTS.md               # cross-tool entry point; a pointer, guarded by a test
 agent_rules/            # the rules — the one real copy
 ├── 01-overview.md          what this project is (fill in)
-├── 02-coding-guidelines.md house style + the pnpm check rule
+├── 02-coding-guidelines.md house style + the npm run check rule
 ├── 03-code-walkthrough.md  the map agents navigate by
 └── 04-committing.md        commit message conventions
 
@@ -56,26 +57,26 @@ Edit `agent_rules/` only. The three rule paths are symlinks to it.
 hand-written pointer at `agent_rules/`. `src/driftGuard.test.ts` asserts it
 still names every rule file and no others.
 
-**The edit-time hook is the highest-leverage piece here.** `pnpm check` reports
+**The edit-time hook is the highest-leverage piece here.** `npm run check` reports
 mechanical problems only once a task is finished, by which point the fix is a
 diff across many files competing for attention with real findings. Fixing
-formatting and autofixable lint at the moment of the edit keeps `pnpm check`'s
+formatting and autofixable lint at the moment of the edit keeps `npm run check`'s
 output about things that need judgement.
 
 ## Getting started
 
 ```bash
-pnpm install --ignore-scripts
-pnpm hooks:install   # see below — `--ignore-scripts` skips `prepare`
-pnpm check
+npm install --ignore-scripts  # generates package-lock.json; commit it
+npm run hooks:install        # --ignore-scripts skips prepare
+npm run check
 ```
 
-`pnpm hooks:install` is a separate step on purpose. Husky installs itself from
+`npm run hooks:install` is a separate step on purpose. Husky normally installs itself from
 the `prepare` lifecycle script, and `--ignore-scripts` — which is the right way
 to install — skips `prepare` along with everything else. Without that second
 line the `pre-commit` and `commit-msg` hooks are present as files but never
 run, and `git config core.hooksPath` is unset. That is the symptom to check for
-if a commit sails through with a failing `pnpm check`.
+if a commit sails through with a failing `npm run check`.
 
 Then:
 
@@ -90,19 +91,19 @@ Then:
 
 | Command                      | What it does                                                     |
 | ---------------------------- | ---------------------------------------------------------------- |
-| `pnpm check`                 | the gate — typecheck, format, lint, knip, jscpd, depcruise, test |
-| `pnpm fix`                   | ESLint autofix + Prettier write. Run this before reading errors. |
-| `pnpm typecheck`             | `tsc --noEmit`                                                   |
-| `pnpm lint`                  | ESLint, `--max-warnings=0`                                       |
-| `pnpm format`                | Prettier, writes                                                 |
-| `pnpm test` / `test:watch`   | Vitest                                                           |
-| `pnpm test:coverage`         | Vitest with thresholds enforced                                  |
-| `pnpm test:mutation`         | Stryker — mutation score, gated by `stryker.conf.mjs`            |
-| `pnpm build`                 | emits `dist/` with declarations                                  |
-| `pnpm check:vulnerabilities` | `pnpm audit`, with the reviewed ignore list applied              |
-| `pnpm scan:secrets`          | gitleaks over the whole git history                              |
-| `pnpm hooks:install`         | installs the husky git hooks (needed after a fresh clone)        |
-| `pnpm tools:install`         | downloads the pinned gitleaks binary into `.tools/`              |
+| `npm run check`                 | the gate — typecheck, format, lint, knip, jscpd, depcruise, test |
+| `npm run fix`                   | ESLint and Oxlint autofix + Prettier write. Run this before reading errors. |
+| `npm run typecheck`             | `tsc --noEmit`                                                   |
+| `npm run lint`                  | ESLint and vendored anti-slop Oxlint rules                                       |
+| `npm run format`                | Prettier, writes                                                 |
+| `npm run test` / `test:watch`   | Vitest                                                           |
+| `npm run test:coverage`         | Vitest with thresholds enforced                                  |
+| `npm run test:mutation`         | Stryker — mutation score, gated by `stryker.conf.mjs`            |
+| `npm run build`                 | emits `dist/` with declarations                                  |
+| `npm run check:vulnerabilities` | `npm audit` with moderate-or-higher advisories treated as failures              |
+| `npm run scan:secrets`          | gitleaks over the whole git history                              |
+| `npm run hooks:install`         | installs the husky git hooks (needed after a fresh clone)        |
+| `npm run tools:install`         | downloads the pinned gitleaks binary into `.tools/`              |
 
 ### The gate is two git hooks
 
@@ -111,7 +112,7 @@ There is no CI. The whole gate is local:
 | Hook         | Runs                                                       |
 | ------------ | ---------------------------------------------------------- |
 | `commit-msg` | commitlint                                                 |
-| `pre-commit` | `pnpm check` — the entire thing, not a staged-files subset |
+| `pre-commit` | `npm run check` — the entire thing, not a staged-files subset |
 | `pre-push`   | secret scan, dependency audit, build, mutation tests       |
 
 **Both hooks are bypassable.** `git commit --no-verify` and
@@ -119,15 +120,15 @@ There is no CI. The whole gate is local:
 notice. This is a gate you choose to keep, not one imposed on you — worth
 knowing before trusting a green branch you did not watch go green.
 
-Two commands are needed once after a fresh clone, because `--ignore-scripts`
-skips the `prepare` script and gitleaks is not an npm package:
+After installing with lifecycle scripts disabled, initialize the hooks and
+pinned gitleaks binary explicitly:
 
 ```bash
-pnpm hooks:install
-pnpm tools:install
+npm run hooks:install
+npm run tools:install
 ```
 
-`pnpm test:mutation` is deliberately **not** in `pnpm check` — a mutation run
+`npm run test:mutation` is deliberately **not** in `npm run check` — a mutation run
 scales with suite size in a way a commit gate cannot absorb. `pre-push` is
 where it runs.
 
@@ -154,23 +155,12 @@ can be reversed — see _Removing what you don't want_.
 
 ### Package management
 
-- **`pnpm`, never `npm` or `yarn`.** The lockfile and every supply-chain guard
-  assume it.
-- **Installs run with `--ignore-scripts`.** A dependency's install script is
-  arbitrary code running as you, with your home directory — and every
-  credential in it — in reach.
-- **A package that genuinely needs its build step is allowlisted one at a
-  time**, in `allowBuilds`, after someone looks at what the step does.
-- **New dependencies need ≥2,000 GitHub stars**, or `eslint-community`
-  maintenance, or first-party status under a project that clears the bar on its
-  own. Below that: stop, report the count, ask. Granted exceptions are written
-  down in `agent_rules/02-coding-guidelines.md`, not just granted.
-- **Nothing published in the last 30 days.** Range a new dependency at the
-  newest _matured_ version and let it drift upward on its own.
-- **Third-party binaries are pinned and checksum-verified**, never `curl | sh`
-  against a moving `latest`. `scripts/installGitleaks.sh` is the pattern.
-- **Vulnerability exceptions are per-advisory and reasoned**, in
-  `auditConfig.ignoreGhsas` — not a lowered severity threshold.
+- **Use npm 11.16+**, not npm or yarn. After the first registry-backed install, commit the generated `package-lock.json`.
+- **Installs disable lifecycle scripts** through `.npmrc` (`ignore-scripts=true`). The explicit `npm run hooks:install` command installs Husky after a clone.
+- **New package versions must be at least 30 days old**, enforced through npm's `min-release-age=30` config; check `npm config get min-release-age` before trusting it.
+- **New dependencies need ≥2,000 GitHub stars**, or `eslint-community` / first-party approval. Exceptions belong in `agent_rules/02-coding-guidelines.md`.
+- **Third-party binaries must be pinned and checksum-verified**, as `scripts/installGitleaks.sh` demonstrates.
+- **Audit failures require review.** npm does not support npm's per-GHSA audit-ignore list; do not lower the audit severity to hide advisories.
 
 ### Types
 
@@ -255,13 +245,13 @@ can be reversed — see _Removing what you don't want_.
 ### Process
 
 - **Conventional Commits**, enforced on `commit-msg`.
-- **`pre-commit` runs the entire `pnpm check`**, not a staged-files subset. The
+- **`pre-commit` runs the entire `npm run check`**, not a staged-files subset. The
   edit-time hook is what keeps that from being slow to act on.
 - **`pre-push` runs the slow half**: secret scan, dependency audit, build,
   mutation tests.
 - **There is no CI, and both hooks are bypassable.** That is a deliberate trade
   for a template meant to be cloned into environments that may not have a
-  runner — not an oversight. Wiring `pnpm check` and the `pre-push` list into
+  runner — not an oversight. Wiring `npm run check` and the `pre-push` list into
   whatever runner you have is the one thing worth adding back.
 
 ### Deliberately not here
@@ -276,35 +266,26 @@ can be reversed — see _Removing what you don't want_.
 
 ## Supply-chain guards
 
-They live in `pnpm-workspace.yaml`, **not** `.npmrc`. pnpm 10.16+ moved its own
-settings out of `.npmrc`, and a key left there is silently ignored — the guard
-you think you have is not there. `pnpm config list` is how you confirm a
-setting is live.
+The npm equivalents are configured in `.npmrc` and in the documented dependency-add procedure:
 
-| Setting               | Effect                                                           |
-| --------------------- | ---------------------------------------------------------------- |
-| `minimumReleaseAge`   | refuse releases under 30 days old (value is in **minutes**)      |
-| `blockExoticSubdeps`  | transitive deps must come from the registry, not git or tarballs |
-| `trustPolicy`         | refuse an update whose publisher trust level dropped             |
-| `trustPolicyExclude`  | reviewed exceptions, pinned to an exact version                  |
-| `verifyDepsBeforeRun` | warn when `node_modules` drifts from the lockfile                |
-| `allowBuilds`         | the only packages permitted to run install scripts               |
+| Setting | Effect |
+| --- | --- |
+| `min-release-age=30` | npm refuses versions published within the last 30 days during resolution |
+| `ignore-scripts=true` | Dependency lifecycle scripts do not execute at install time |
+| `npm audit --audit-level=moderate` | Any moderate-or-higher advisory fails the pre-push gate |
 
-Two consequences to plan around:
+npm does not have exact equivalents to npm's `trustPolicy: no-downgrade`,
+`blockExoticSubdeps`, or `verifyDepsBeforeRun` behavior. Do not assume these
+guards survive this migration; review lockfile changes, prefer registry
+dependencies, and use `npm ci` after generating a valid lockfile.
 
-- `minimumReleaseAge` constrains **resolution**, not just verification. A
-  `^x.y.z` range pinned to a release from this week has no mature version to
-  fall back to, and the install fails outright. Range a new dependency at the
-  newest **matured** version and let it drift upward on its own.
-- `trustPolicy: no-downgrade` fires on transitive deps you did not choose.
-  `trustPolicyExclude` is the escape hatch, and each entry is pinned to an exact
-  version so the next release has to be re-reviewed. Do not grow that list just
-  to make an install pass.
+The previous npm lockfile contained only npm itself and not the project dependency
+tree. It therefore cannot be converted into a truthful `package-lock.json`
+offline. Run `npm install --ignore-scripts` with registry access and commit the
+generated `package-lock.json` before using `npm ci`.
 
-| `auditConfig` | advisories `pnpm audit` has been told to ignore, each one reviewed |
-
-There is no Dependabot. `pnpm outdated` is the manual equivalent; anything it
-proposes still has to clear the 30-day window and the star bar.
+There is no Dependabot. `npm outdated` is the manual check for updates; changes
+must still clear the 30-day release-age policy.
 
 ## Removing what you don't want
 
@@ -319,7 +300,7 @@ Everything is independent:
 - Finding `strict-type-checked` too noisy for your codebase? Swap it for
   `recommended-type-checked` in `eslint.config.js`.
 - Mutation testing too slow once the suite grows? Drop it from `.husky/pre-push`
-  and run `pnpm test:mutation` on a schedule instead. Occasional runs still
+  and run `npm run test:mutation` on a schedule instead. Occasional runs still
   recalibrate the suite; deleting it entirely does not.
 - Don't want a local secret scan? Delete `.husky/pre-push`, `scan:secrets`,
   `tools:install` and `scripts/installGitleaks.sh`.
@@ -327,5 +308,15 @@ Everything is independent:
 ## Add when you publish
 
 Nothing here assumes the project ships to a registry. When it does, add
-`publint` and `@arethetypeswrong/cli` to `pnpm check` — they catch broken
+`publint` and `@arethetypeswrong/cli` to `npm run check` — they catch broken
 `exports` maps and type resolution that no test exercises.
+
+### anti-slop provenance
+
+The generic [anti-slop](https://github.com/dmmulroy/anti-slop) Oxlint rules
+are vendored at `tools/oxlint/anti-slop/`. Their source revision and
+license provenance are documented in `tools/oxlint/anti-slop/UPSTREAM.md`.
+Run `npm run lint:slop` for these rules alone; `npm run lint` and
+`npm run check` enforce them alongside the existing ESLint gate.
+Effect-only rules are present upstream but not enabled because this template
+does not depend on Effect.

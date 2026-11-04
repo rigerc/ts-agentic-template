@@ -13,7 +13,7 @@ import eslintConfigPrettier from 'eslint-config-prettier';
  * Line length is NOT enforced here. `eslint-config-prettier` is last in the
  * export and switches `max-len` off, so any cap set here would be dead config
  * that reads as enforced. Prettier's `printWidth` in `.prettierrc` is the one
- * real setting, and `pnpm check:format` is what enforces it.
+ * real setting, and `npm run check:format` is what enforces it.
  */
 
 // `src/env.ts` is the one place `process.env` may be read — it is the file
@@ -218,7 +218,7 @@ const sharedTypeScriptRules = {
 
 export default tseslint.config(
   {
-    ignores: ['dist', 'node_modules', 'coverage', 'reports', '.stryker-tmp'],
+    ignores: ['dist', 'node_modules', 'coverage', 'reports', '.stryker-tmp', 'tools/oxlint/anti-slop/**'],
   },
   // TypeScript sources. `**/*.ts` rather than a src/scripts allowlist so that a
   // root-level config file (vitest.config.ts) is linted too, and `projectService`

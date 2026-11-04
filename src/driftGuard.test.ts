@@ -204,7 +204,7 @@ describe('AGENTS.md', () => {
  *
  * These are read out of the config files as text rather than by importing them.
  * Importing would be more faithful, but `eslint.config.js` has no type
- * declarations, `stryker.conf.mjs` is plain JS, and `pnpm-workspace.yaml` is not
+ * declarations, `stryker.conf.mjs` is plain JS, and `.npmrc` is not
  * JavaScript at all — so half the probes would be text anyway, and one
  * mechanism reads better than three. Prettier owns the formatting of every file
  * involved, which is what keeps the patterns stable.
@@ -236,11 +236,11 @@ const PROBES: Record<string, Probe> = {
   'max-lines-per-function': eslintCap('max-lines-per-function'),
   'max-params': eslintCap('max-params'),
   'max-statements': eslintCap('max-statements'),
-  // Stored in minutes, quoted in days.
-  minimumReleaseAge: {
-    file: 'pnpm-workspace.yaml',
-    pattern: /minimumReleaseAge:\s*(\d+)/,
-    perUnit: 60 * 24,
+  // npm stores this setting in days.
+  'min-release-age': {
+    file: '.npmrc',
+    pattern: /^min-release-age=(\d+)$/m,
+    perUnit: 1,
   },
   printWidth: { file: '.prettierrc', pattern: /"printWidth":\s*(\d+)/, perUnit: 1 },
   'thresholds.break': { file: 'stryker.conf.mjs', pattern: /break:\s*(\d+)/, perUnit: 1 },
