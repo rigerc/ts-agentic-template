@@ -5,18 +5,19 @@ on:
     branches: [main]
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   migrate:
-    if: github.head_ref == 'chore/upgrade-vite-plus-1.5'
+    if: github.head_ref == 'chore/upgrade-vite-plus-1.5' && github.event.pull_request.head.repo.full_name == 'rigerc/ts-agentic-template'
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
-          persist-credentials: false
+          persist-credentials: true
+          ref: chore/upgrade-vite-plus-1.5
       - name: Node.js
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
         with:
@@ -35,11 +36,17 @@ jobs:
           npm exec -- vp fmt --write
           git diff --stat
       - name: Check upgraded dependencies
-        continue-on-error: true
         run: npm run check
       - name: Build upgraded package
-        continue-on-error: true
         run: npm run build
+      - name: Commit generated toolchain pins and lockfile
+        shell: bash
+        run: |
+          set -euo pipefail
+          git add package.json package-lock.json
+          git diff --cached --quiet && exit 0
+          git -c user.name='github-actions[bot]' -c user.email='41898282+github-actions[bot]@users.noreply.github.com' commit -m 'chore: upgrade Vite+ toolchain to 1.5.0'
+          git push origin HEAD:refs/heads/chore/upgrade-vite-plus-1.5
       - name: Package migration output
         if: always()
         run: |
