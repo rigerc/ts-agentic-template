@@ -1,36 +1,13 @@
-# Logs
-logs
+node_modules/
+dist/
+coverage/
+.vite-hooks/_/
+.env
+*.local
 *.log
 npm-debug.log*
-pnpm-debug.log*
-
-node_modules
-dist
-dist-ssr
-*.local
-
-# Editor directories and files
+.DS_Store
+.idea/
 .vscode/*
 !.vscode/extensions.json
-.idea
-.DS_Store
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
-
 scratch.md
-
-# Local environment config — see sample.env for the reference
-.env
-
-# Coverage reports
-/coverage/
-
-# Mutation testing: scratch sandbox and generated report
-/.stryker-tmp/
-/reports/
-
-# Pinned third-party binaries, installed by `pnpm tools:install`
-/.tools/

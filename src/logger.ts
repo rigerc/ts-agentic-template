@@ -18,9 +18,13 @@ import { env } from './env';
 
 const isDevelopment = env.NODE_ENV === 'development';
 
-export const logger = pino({
-  level: env.LOG_LEVEL,
-  ...(isDevelopment ? { transport: { target: 'pino-pretty', options: { colorize: true } } } : {}),
-});
+const loggerOptions = isDevelopment
+  ? {
+      level: env.LOG_LEVEL,
+      transport: { target: 'pino-pretty', options: { colorize: true } },
+    }
+  : { level: env.LOG_LEVEL };
+
+export const logger = pino(loggerOptions);
 
 export type Logger = typeof logger;

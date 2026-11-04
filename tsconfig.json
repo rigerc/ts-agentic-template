@@ -5,50 +5,26 @@
     "moduleResolution": "bundler",
     "lib": ["ES2022"],
     "types": ["node"],
-
     "noEmit": true,
     "isolatedModules": true,
-    /* Type-only imports are erased, not just preferred: `import { type Foo }`
-       becomes a compile error if written as a value import. Keeps the lint
-       rule (`consistent-type-imports`) from being the only guard an agent
-       can skip by running `tsc` alone. */
     "verbatimModuleSyntax": true,
     "resolveJsonModule": true,
-    /* A side-effect import (`import './register-hooks'`) is currently the one
-       import form that resolves to nothing without complaint — a typo in the
-       path fails at runtime, on the machine that runs it. */
     "noUncheckedSideEffectImports": true,
-    /* Every file is a module, whether or not it happens to contain an
-       import/export today. Without it, adding the first export to a script
-       silently changes its scope from global to module. */
     "moduleDetection": "force",
     "esModuleInterop": true,
     "skipLibCheck": true,
-
-    /* Type checking — strict by default. Loosen deliberately, per project. */
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
     "noImplicitReturns": true,
-    /* The highest-value flag for agent-written code: `arr[0]` and `map[key]`
-       become `T | undefined`, so the indexing that crashes at runtime fails at
-       compile time instead. Non-null assertions are a lint error, so the fix
-       has to be a real guard. */
     "noUncheckedIndexedAccess": true,
-    /* `{ a?: string }` stops accepting an explicit `a: undefined`, which keeps
-       "absent" and "present but undefined" from silently merging. */
     "exactOptionalPropertyTypes": true,
-    "noPropertyAccessFromIndexSignature": false,
-    /* Compile failures, not lint warnings: overriding a base-class member
-       without `override`, and importing a file with the wrong casing. */
     "noImplicitOverride": true,
     "forceConsistentCasingInFileNames": true,
-
-    "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"]
+      "@/*": ["./src/*"]
     }
   },
-  "include": ["src", "scripts", "*.config.ts"]
+  "include": ["src", "vite.config.ts"]
 }
