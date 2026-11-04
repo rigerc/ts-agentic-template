@@ -13,6 +13,7 @@ secondary lint/test systems.
 Vite+ is pinned to **1.0.0** to respect the 30-day release-age policy.
 Its bundled Oxlint powers both linting and type checking; Vitest runs through
 Vite+. There is no separate ESLint, Prettier, Oxlint, or Vitest dependency.
+The npm overrides pin transitive Vite and Vitest to the bundled Vite+ versions.
 
 ## Getting started
 
