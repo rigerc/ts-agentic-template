@@ -55,9 +55,11 @@ The only repository-owned hook is `.vite-hooks/pre-commit`, which invokes
 
 The [GitHub Actions CI workflow](.github/workflows/ci.yml) runs on pull
 requests and pushes to `main`. It installs Node.js from `.nvmrc`, pins
-npm 11.16.0, then runs `npm run check` and `npm run build`.
-The AGENTS.md linter is an npm development dependency, not a vendored
-agent ruleset.
+npm 11.16.0, and uses the committed lockfile with `npm ci`.
+It reports formatting (Oxfmt), type-aware linting (Oxlint plus all configured
+anti-slop rules), `AGENTS.md` linting, coverage-gated tests, and the Vite+
+build as separately named steps. The AGENTS.md linter is an npm development
+dependency, not a vendored agent ruleset.
 
 CI uses `npm ci --ignore-scripts` against the committed lockfile.
 
