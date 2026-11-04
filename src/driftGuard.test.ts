@@ -56,7 +56,11 @@ function read(relativePath: string): string {
 
 /** First capture group of every match, dropping the ones that captured nothing. */
 function captures(source: string, pattern: RegExp): string[] {
-  return [...source.matchAll(pattern)].map((match) => match[1] ?? '').filter(Boolean);
+  return [...source.matchAll(pattern)].flatMap((match) => {
+    const captured = match[1];
+
+    return captured ? [captured] : [];
+  });
 }
 
 function sorted(values: Iterable<string>): string[] {
@@ -133,7 +137,7 @@ function tsFileNames(text: string): string[] {
 function sourceFileNames(): string[] {
   const entries = readdirSync(join(repoRoot, 'src'), { encoding: 'utf8', recursive: true });
 
-  return entries.filter((entry) => parse(entry).ext === '.ts').map((entry) => basename(entry));
+  return entries.flatMap((entry) => (parse(entry).ext === '.ts' ? [basename(entry)] : []));
 }
 
 describe(`src/ and ${WALKTHROUGH}`, () => {
@@ -167,9 +171,11 @@ describe('agent rule mirrors', () => {
 
   it('serves identical content through every mirror', () => {
     const divergent = RULE_MIRRORS.flatMap((mirror) =>
-      ruleFiles
-        .filter((file) => read(`${mirror}/${file}`) !== read(`agent_rules/${file}`))
-        .map((file) => `${mirror}/${file}`)
+      ruleFiles.flatMap((file) =>
+        read(`${mirror}/${file}`) === read(`agent_rules/${file}`)
+          ? []
+          : [`${mirror}/${file}`]
+      )
     );
 
     expect(divergent).toEqual([]);
@@ -228,7 +234,7 @@ function eslintCap(rule: string): Probe {
   };
 }
 
-const PROBES: Record<string, Probe> = {
+const PROBES = {
   complexity: eslintCap('complexity'),
   'coverage.thresholds': { file: 'vitest.config.ts', pattern: /statements:\s*(\d+)/, perUnit: 1 },
   'max-depth': eslintCap('max-depth'),
@@ -244,7 +250,7 @@ const PROBES: Record<string, Probe> = {
   },
   printWidth: { file: '.prettierrc', pattern: /"printWidth":\s*(\d+)/, perUnit: 1 },
   'thresholds.break': { file: 'stryker.conf.mjs', pattern: /break:\s*(\d+)/, perUnit: 1 },
-};
+} satisfies Record<string, Probe>;
 
 function probeValue(setting: string, probe: Probe): number {
   const [, captured] = probe.pattern.exec(read(probe.file)) ?? [];
@@ -273,13 +279,12 @@ describe('the numbers agent_rules quotes', () => {
   });
 
   it('quotes the value the config actually holds', () => {
-    const drifted = Object.entries(PROBES)
-      .map(([setting, probe]) => ({
-        actual: probeValue(setting, probe),
-        documented: documented.get(setting),
-        setting,
-      }))
-      .filter((row) => row.documented !== row.actual);
+    const drifted = Object.entries(PROBES).flatMap(([setting, probe]) => {
+      const actual = probeValue(setting, probe);
+      const expected = documented.get(setting);
+
+      return actual === expected ? [] : [{ actual, documented: expected, setting }];
+    });
 
     expect(drifted).toEqual([]);
   });
