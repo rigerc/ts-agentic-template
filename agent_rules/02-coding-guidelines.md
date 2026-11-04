@@ -21,8 +21,8 @@
 
 ## Always run `npm run check` before marking a task complete
 
-- `npm run check` runs typecheck, format, ESLint and anti-slop, unused-code, duplication,
-  dependency rules and tests-with-coverage.
+- `npm run check` runs typecheck, formatting, ESLint and anti-slop, unused-code,
+  duplication, dependency rules and tests-with-coverage.
 - If it returns errors or warnings, fix them.
 - `npm run fix` clears the mechanical ones — ESLint/Oxlint autofix plus Prettier. Run it
   first, then read what is left.
@@ -119,7 +119,7 @@
 - Install with scripts off: `npm install --ignore-scripts <package>`.
 - After a fresh clone, run `npm run hooks:install`. `--ignore-scripts` skips the
   `prepare` script that installs husky, so without it the git hooks are inert.
-- `min-release-age=30` in `.npmrc` constrains **resolution** in DAYS,
+- `min-release-age=30` in `.npmrc` constrains **resolution** in days,
   including transitive dependencies. Select a mature release when adding a package.
 - npm does not have equivalent native `trustPolicy` or `blockExoticSubdeps`
   controls; inspect new lockfile entries instead of assuming the old guards still apply.
@@ -178,18 +178,18 @@ enforced by a config file. `src/driftGuard.test.ts` reads both and fails when
 they disagree, so a cap cannot be relaxed in a config while the rules still
 claim the old value.
 
-| Setting                         | Value | Held in               |
-| ------------------------------- | ----- | --------------------- |
-| `max-lines-per-function`        | 120   | `eslint.config.js`    |
-| `max-lines` (per file)          | 500   | `eslint.config.js`    |
-| `complexity`                    | 10    | `eslint.config.js`    |
-| `max-depth`                     | 3     | `eslint.config.js`    |
-| `max-params`                    | 5     | `eslint.config.js`    |
-| `max-statements`                | 70    | `eslint.config.js`    |
-| `coverage.thresholds` (%)       | 80    | `vitest.config.ts`    |
-| `thresholds.break` (mutation %) | 90    | `stryker.conf.mjs`    |
-| `printWidth` (columns)          | 100   | `.prettierrc`         |
-| `min-release-age` (days)      | 30    | `.npmrc` |
+| Setting                         | Value | Held in            |
+| ------------------------------- | ----- | ------------------ |
+| `max-lines-per-function`        | 120   | `eslint.config.js` |
+| `max-lines` (per file)          | 500   | `eslint.config.js` |
+| `complexity`                    | 10    | `eslint.config.js` |
+| `max-depth`                     | 3     | `eslint.config.js` |
+| `max-params`                    | 5     | `eslint.config.js` |
+| `max-statements`                | 70    | `eslint.config.js` |
+| `coverage.thresholds` (%)       | 80    | `vitest.config.ts` |
+| `thresholds.break` (mutation %) | 90    | `stryker.conf.mjs` |
+| `printWidth` (columns)          | 100   | `.prettierrc`      |
+| `min-release-age` (days)        | 30    | `.npmrc`           |
 
 Change the config and this table together. Both directions are checked: a row
 with no probe behind it fails just as loudly as a probe with no row.

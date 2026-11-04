@@ -1,6 +1,6 @@
 ---
 name: add-dependency
-description: Adds a npm dependency to this project the way its rules require — resolve the real repository, check the star count, pick a version old enough to install, and install with scripts off. Use whenever a package is about to be added, swapped, or upgraded across a major version, including a pinned third-party binary.
+description: Adds an npm dependency to this project the way its rules require — resolve the real repository, check the star count, pick a version old enough to install, and install with scripts off. Use whenever a package is about to be added, swapped, or upgraded across a major version, including a pinned third-party binary.
 ---
 
 Adding a dependency here is a procedure, not a judgement call. Work through it
@@ -66,7 +66,7 @@ repository's `min-release-age` policy. npm also reads `ignore-scripts=true`
 from `.npmrc`. If a dependency genuinely needs its install step, review it
 first and explicitly run `npm rebuild <package> --ignore-scripts=false`.
 
-npm does not implement npm's publisher-trust downgrade or exotic-transitive
+npm does not implement pnpm's publisher-trust downgrade or exotic-transitive
 guards. Review newly introduced resolution URLs in the lockfile rather than
 assuming those controls survived the migration.
 
