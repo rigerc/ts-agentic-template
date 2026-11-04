@@ -1,0 +1,54 @@
+name: Generate Vite+ upgrade
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  migrate:
+    if: github.head_ref == 'chore/upgrade-vite-plus-1.5'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+      - name: Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
+        with:
+          node-version-file: .nvmrc
+      - name: npm 11
+        run: npm install --global npm@11.16.0 --ignore-scripts
+      - name: Install original baseline
+        run: npm ci --ignore-scripts
+      - name: Run target Vite+ migrator and create lockfile
+        env:
+          npm_config_min_release_age: '0'
+        run: |
+          npx --yes --package=vite-plus@1.5.0 vp help migrate
+          npx --yes --package=vite-plus@1.5.0 vp migrate --no-interactive
+          npm install --ignore-scripts
+          npm exec -- vp fmt --write
+          git diff --stat
+      - name: Check upgraded dependencies
+        continue-on-error: true
+        run: npm run check
+      - name: Build upgraded package
+        continue-on-error: true
+        run: npm run build
+      - name: Package migration output
+        if: always()
+        run: |
+          tar -czf /tmp/vite-upgrade-output.tar.gz package.json package-lock.json vite.config.ts .npmrc tsconfig.json README.md AGENTS.md src .vite-hooks
+      - name: Upload migration result
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: vite-upgrade-output
+          path: /tmp/vite-upgrade-output.tar.gz
+          if-no-files-found: error
+          retention-days: 1
