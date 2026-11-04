@@ -43,6 +43,21 @@ jobs:
             npm install --ignore-scripts
           fi
 
+      - name: Capture generated npm lockfile
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: npm-lockfile
+          path: package-lock.json
+          if-no-files-found: error
+          retention-days: 1
+
+      - name: Formatting diagnostics
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm exec -- vp fmt . --write
+          git diff -- README.md AGENTS.md package.json vite.config.ts src/
+
       - name: Static checks, coverage and AGENTS.md lint
         run: npm run check
 
