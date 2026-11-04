@@ -54,12 +54,28 @@ The only repository-owned hook is `.vite-hooks/pre-commit`, which invokes
 ## Continuous integration
 
 The [GitHub Actions CI workflow](.github/workflows/ci.yml) runs on pull
-requests and pushes to `main`. It installs Node.js from `.nvmrc`, pins
-npm 11.16.0, then runs `npm run check` and `npm run build`.
-The AGENTS.md linter is an npm development dependency, not a vendored
-agent ruleset.
+requests and pushes to `main`. Its path filters skip unrelated work:
 
-CI uses `npm ci --ignore-scripts` against the committed lockfile.
+- TypeScript source, build configuration, and lockfile changes run
+  **Oxlint + anti-slop**, type checks, coverage-gated Vitest tests, and
+  the Vite+ build.
+- Markdown, JSON, JavaScript, TypeScript, and YAML changes run **Oxfmt**.
+- `AGENTS.md` and relevant source/config changes run strict **agents-md-lint**.
+- Dependency changes trigger **npm audit**; pull requests also run GitHub
+  **Dependency Review**, blocking newly introduced high-severity advisories.
+- Changes to workflows or Dependabot configuration trigger **actionlint**
+  and **zizmor** (medium-severity, medium-confidence threshold).
+
+A weekly scheduled run refreshes the npm advisory report and workflow security
+scans. Known vulnerabilities reported by `npm audit` are non-blocking until
+the existing advisory backlog is resolved; new high-severity dependency
+vulnerabilities remain a blocking PR check. A stable **CI result** job fails
+if any applicable required check fails, even when other jobs were skipped.
+
+CI uses Node.js from `.nvmrc`, npm 11.16.0, and
+`npm ci --ignore-scripts` against the committed lockfile where appropriate.
+`.github/dependabot.yml` checks npm packages and GitHub Actions weekly, with a
+30-day version-update cooldown. CodeQL is not configured.
 
 ## Source
 

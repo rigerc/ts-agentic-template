@@ -35,8 +35,8 @@ formatting and lint fixes; let `npm run check` verify the result.
 
 ## Git workflow
 
-Keep changes scoped to the requested task. CI runs the same check and build
-commands on pull requests to `main`.
+Keep changes scoped to the requested task. CI runs only checks relevant to
+changed paths, with a required aggregate result on pull requests to `main`.
 
 ## Boundaries
 
