@@ -100,7 +100,10 @@ jobs:
         run: npm ci --ignore-scripts
       - name: Formatting (Oxfmt)
         if: needs.changes.outputs.format == 'true'
-        run: npm exec -- vp fmt --check
+        run: |
+          npm exec -- vp fmt
+          git diff -- tests/anti-slop.test.ts
+          git diff --exit-code
       - name: Lint and type-check (Oxlint + anti-slop)
         if: needs.changes.outputs.source == 'true'
         run: npm run lint
