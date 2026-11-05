@@ -122,16 +122,12 @@ tester.run('no-unsafe-dictionary-type', noUnsafeDictionaryTypeRule, {
   ],
 });
 
-tester.run(
-  'require-safety-comment-for-type-assertion',
-  requireSafetyCommentForTypeAssertionRule,
-  {
-    valid: ['// SAFETY: The ID was validated before this assertion.\nconst id = input as UserId;'],
-    invalid: [
-      {
-        code: 'const id = input as UserId;',
-        errors: [{ messageId: 'missingSafetyComment' }],
-      },
-    ],
-  }
-);
+tester.run('require-safety-comment-for-type-assertion', requireSafetyCommentForTypeAssertionRule, {
+  valid: ['// SAFETY: The ID was validated before this assertion.\nconst id = input as UserId;'],
+  invalid: [
+    {
+      code: 'const id = input as UserId;',
+      errors: [{ messageId: 'missingSafetyComment' }],
+    },
+  ],
+});
