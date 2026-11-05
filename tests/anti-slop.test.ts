@@ -14,6 +14,7 @@ import { noUnsafeDictionaryTypeRule } from '../tools/oxlint/anti-slop/rules/no-u
 import { requireSafetyCommentForTypeAssertionRule } from '../tools/oxlint/anti-slop/rules/require-safety-comment-for-type-assertion';
 
 RuleTester.describe = describe;
+
 RuleTester.it = it;
 
 const tester = new RuleTester({ languageOptions: { parserOptions: { lang: 'ts' } } });
