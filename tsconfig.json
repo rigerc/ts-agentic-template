@@ -1,10 +1,15 @@
 {
   "compilerOptions": {
-    "target": "ES2022",
+    "target": "ES2024",
     "module": "ESNext",
     "moduleResolution": "bundler",
-    "lib": ["ES2022"],
-    "types": ["node"],
+    "lib": [
+      "ES2024"
+    ],
+    "jsx": "react-jsx",
+    "types": [
+      "node"
+    ],
     "noEmit": true,
     "isolatedModules": true,
     "verbatimModuleSyntax": true,
@@ -23,8 +28,15 @@
     "noImplicitOverride": true,
     "forceConsistentCasingInFileNames": true,
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": [
+        "./src/*"
+      ]
     }
   },
-  "include": ["src", "vite.config.ts"]
+  "include": [
+    "src",
+    "tests",
+    "scripts",
+    "vite.config.ts"
+  ]
 }
