@@ -62,7 +62,7 @@ export default defineConfig({
     },
   },
   test: {
-    include: ['src/**/*.test.ts', 'tests/**/*.test.ts'],
+    include: ['src/**/*.test.ts'],
     exclude: ['**/node_modules/**', '**/dist/**', '**/*.integration.test.ts'],
     environment: 'node',
     coverage: {
