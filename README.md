@@ -104,12 +104,6 @@ upstream lint code, not a custom agent skill or instruction set. The unused
 Effect rules are not included. The vendored plugin imports Oxlint's authoring
 API from `vite-plus/lint/plugins`, so no second Oxlint installation is needed.
 
-The focused rule regression tests in `tests/anti-slop.test.ts` use the
-`RuleTester` bundled with Vite+ (`vite-plus/lint/plugins-dev`). They run with
-the regular Vitest suite, including in CI, even though vendored rule sources
-are excluded from application lint and formatting. These are smoke tests, not
-full upstream test-suite coverage.
-
 ## Supply-chain settings
 
 `.npmrc` disables dependency lifecycle scripts, requires registry releases
