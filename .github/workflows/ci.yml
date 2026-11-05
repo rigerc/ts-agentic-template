@@ -52,6 +52,7 @@ jobs:
               - '**/*.yaml'
             source:
               - 'src/**'
+              - 'tests/**'
               - 'tools/oxlint/anti-slop/**'
               - 'vite.config.ts'
               - 'tsconfig.json'
