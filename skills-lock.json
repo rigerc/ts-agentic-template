@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "skills": {
+    "fix-anti-slop": {
+      "source": "rigerc/rigerc-skills",
+      "sourceType": "github",
+      "skillPath": "skills/fix-anti-slop/SKILL.md",
+      "computedHash": "83564e941602e6d71677df77137874924270449b7cdd2f4fd11da05dbc8e52e7"
+    },
+    "tui-screen-flow-spec": {
+      "source": "rigerc/rigerc-skills",
+      "sourceType": "github",
+      "skillPath": "skills/tui-screen-flow-spec/SKILL.md",
+      "computedHash": "f003d3c4a9e66f8a8c9676ec5efaba734f4ddd0249b4f8b660619759213d5b74"
+    }
+  }
+}

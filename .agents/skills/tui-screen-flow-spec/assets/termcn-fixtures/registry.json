@@ -1,0 +1,31 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "homepage": "https://termcn.dev",
+  "x-fixture-note": "Reduced derivative of inspected termcn registry item TypeScript declarations; use the live registry or complete local mirror for production schemas.",
+  "items": [
+    {
+      "name": "ink/types",
+      "type": "registry:file",
+      "title": "Types",
+      "description": "Shared terminal tokens"
+    },
+    {
+      "name": "ink/text-input",
+      "type": "registry:ui",
+      "title": "Text Input",
+      "description": "Single-line text input"
+    },
+    {
+      "name": "ink/checkbox",
+      "type": "registry:ui",
+      "title": "Checkbox",
+      "description": "Focusable checkbox"
+    },
+    {
+      "name": "opentui/text-input",
+      "type": "registry:ui",
+      "title": "Text Input",
+      "description": "OpenTUI single-line text input"
+    }
+  ]
+}

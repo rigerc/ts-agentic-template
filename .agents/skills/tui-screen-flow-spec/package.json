@@ -1,0 +1,14 @@
+{
+  "name": "tui-screen-flow-spec",
+  "version": "1.5.0",
+  "private": true,
+  "type": "module",
+  "description": "Standalone Agent Skill for TUI screens, flows and contracts with an offline HTML explorer and termcn-backed mockup generation",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "help": "node scripts/tui.mjs help",
+    "test": "node scripts/tui.mjs test"
+  }
+}

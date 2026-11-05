@@ -1,0 +1,14 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "ink/types",
+  "type": "registry:file",
+  "title": "Types",
+  "description": "Shared terminal tokens",
+  "files": [
+    {
+      "path": "registry/ui/types.ts",
+      "type": "registry:file",
+      "content": "export type BorderStyle =\n | \"single\" | \"double\" | \"round\" | \"bold\" | \"singleDouble\" | \"doubleSingle\" | \"classic\";\n"
+    }
+  ]
+}

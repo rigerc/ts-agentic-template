@@ -1,0 +1,14 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "ink/text-input",
+  "type": "registry:ui",
+  "title": "Text Input",
+  "description": "Single-line text input",
+  "files": [
+    {
+      "path": "registry/ink/text-input.tsx",
+      "type": "registry:ui",
+      "content": "export interface TextInputProps {\n  value?: string;\n  defaultValue?: string;\n  onValueChange?: (value: string) => void;\n  onChange?: (value: string) => void;\n  onSubmit?: (value: string) => void;\n  placeholder?: string;\n  mask?: string;\n  showCursor?: boolean;\n  highlightPastedText?: boolean;\n  validate?: (value: string) => string | null;\n  width?: number;\n  label?: string;\n  autoFocus?: boolean;\n  id?: string;\n  isActive?: boolean;\n  disabled?: boolean;\n  readOnly?: boolean;\n  required?: boolean;\n  \"aria-label\"?: string;\n  cursorOrigin?: { x: number; y: number };\n  bordered?: boolean;\n  borderStyle?: BorderStyle;\n  paddingX?: number;\n  cursor?: string;\n}"
+    }
+  ]
+}

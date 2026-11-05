@@ -1,0 +1,14 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "ink/checkbox",
+  "type": "registry:ui",
+  "title": "Checkbox",
+  "description": "Focusable checkbox",
+  "files": [
+    {
+      "path": "registry/ink/checkbox.tsx",
+      "type": "registry:ui",
+      "content": "export interface CheckboxProps {\n  checked?: boolean;\n  defaultChecked?: boolean;\n  onCheckedChange?: (checked: boolean) => void;\n  onChange?: (checked: boolean) => void;\n  label?: string;\n  indeterminate?: boolean;\n  disabled?: boolean;\n  id?: string;\n  autoFocus?: boolean;\n  isActive?: boolean;\n  \"aria-label\"?: string;\n  checkedIcon?: string;\n  uncheckedIcon?: string;\n  indeterminateIcon?: string;\n}"
+    }
+  ]
+}
