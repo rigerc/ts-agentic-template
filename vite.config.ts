@@ -37,6 +37,9 @@ export default defineConfig({
     ],
     jsPlugins: [{ name: 'anti-slop', specifier: './tools/oxlint/anti-slop/index.ts' }],
     rules: {
+      'no-console': 'error',
+      'typescript/no-explicit-any': 'error',
+      'typescript/no-non-null-assertion': 'error',
       'oxc/no-accumulating-spread': 'error',
       'anti-slop/no-array-filter-map': 'error',
       'anti-slop/no-reduce-accumulator-copy': 'error',
@@ -59,7 +62,7 @@ export default defineConfig({
     },
   },
   test: {
-    include: ['src/**/*.test.ts'],
+    include: ['src/**/*.test.ts', 'tests/**/*.test.ts'],
     exclude: ['**/node_modules/**', '**/dist/**', '**/*.integration.test.ts'],
     environment: 'node',
     coverage: {
